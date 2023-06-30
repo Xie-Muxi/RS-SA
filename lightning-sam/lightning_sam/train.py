@@ -65,8 +65,8 @@ def train_sam(
 ):
     """The SAM training loop."""
 
-    focal_loss = FocalLoss()
-    dice_loss = DiceLoss()
+    focal_loss = FocalLoss(cfg.num_classes)
+    dice_loss = DiceLoss(cfg.num_classes)
 
     for epoch in range(1, cfg.num_epochs):
         batch_time = AverageMeter()
@@ -110,13 +110,14 @@ def train_sam(
             iou_losses.update(loss_iou.item(), batch_size)
             total_losses.update(loss_total.item(), batch_size)
 
-            fabric.print(f'Epoch: [{epoch}][{iter+1}/{len(train_dataloader)}]'
-                         f' | Time [{batch_time.val:.3f}s ({batch_time.avg:.3f}s)]'
-                         f' | Data [{data_time.val:.3f}s ({data_time.avg:.3f}s)]'
-                         f' | Focal Loss [{focal_losses.val:.4f} ({focal_losses.avg:.4f})]'
-                         f' | Dice Loss [{dice_losses.val:.4f} ({dice_losses.avg:.4f})]'
-                         f' | IoU Loss [{iou_losses.val:.4f} ({iou_losses.avg:.4f})]'
-                         f' | Total Loss [{total_losses.val:.4f} ({total_losses.avg:.4f})]')
+            if iter % cfg.log_interval == 0:
+                fabric.print(f'Epoch: [{epoch}][{iter+1}/{len(train_dataloader)}]'
+                            f' | Time [{batch_time.val:.3f}s ({batch_time.avg:.3f}s)]'
+                            f' | Data [{data_time.val:.3f}s ({data_time.avg:.3f}s)]'
+                            f' | Focal Loss [{focal_losses.val:.4f} ({focal_losses.avg:.4f})]'
+                            f' | Dice Loss [{dice_losses.val:.4f} ({dice_losses.avg:.4f})]'
+                            f' | IoU Loss [{iou_losses.val:.4f} ({iou_losses.avg:.4f})]'
+                            f' | Total Loss [{total_losses.val:.4f} ({total_losses.avg:.4f})]')
 
 
 def configure_opt(cfg: Box, model: Model):

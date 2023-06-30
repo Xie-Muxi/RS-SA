@@ -1,11 +1,12 @@
 from box import Box
 
 config = {
-    "num_devices": 4,
-    "batch_size": 12,
-    "num_workers": 4,
-    "num_epochs": 20,
+    "num_devices": 3,
+    "batch_size": 9,
+    "num_workers": 3,
+    "num_epochs": 2,
     "eval_interval": 2,
+    "num_classes": 81, # 80 + 1 for background
     "out_dir": "out/training",
     "opt": {
         "learning_rate": 8e-4,
@@ -16,7 +17,7 @@ config = {
     },
     "model": {
         "type": 'vit_h',
-        "checkpoint": "sam_vit_h_4b8939.pth",
+        "checkpoint": "/root/xmx/RS-SA/segment-anything/segment_anything/ckpt/sam_vit_h_4b8939.pth",
         "freeze": {
             "image_encoder": True,
             "prompt_encoder": True,
@@ -32,7 +33,8 @@ config = {
             "root_dir": "/coco/coco2017/val2017",
             "annotation_file": "/coco/coco2017/annotations/instances_val2017.json"
         }
-    }
+    },
+
 }
 
 cfg = Box(config)
