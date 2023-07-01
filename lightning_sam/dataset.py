@@ -1,7 +1,7 @@
 # dataset.py
 
-
 import os
+
 import cv2
 import numpy as np
 import torch
@@ -108,12 +108,3 @@ def load_datasets(cfg, img_size):
                                 num_workers=cfg.num_workers,
                                 collate_fn=collate_fn)
     return train_dataloader, val_dataloader
-
-
-def load_potsdam():
-    # TODO
-    pass
-
-def load_vaihingen():
-    # TODO
-    pass

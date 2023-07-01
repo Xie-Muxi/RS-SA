@@ -1,5 +1,6 @@
 import os
 import time
+import subprocess
 
 import lightning as L
 import segmentation_models_pytorch as smp
@@ -20,7 +21,7 @@ from utils import calc_iou
 torch.set_float32_matmul_precision('high')
 
 
-def validate(fabric: L.Fabric, model: Model, val_dataloader: DataLoader, epoch: int = 0):
+def validate(cfg:Box, fabric: L.Fabric, model: Model, val_dataloader: DataLoader, epoch: int = 0, optimizer=None):
     model.eval()
     ious = AverageMeter()
     f1_scores = AverageMeter()
@@ -41,18 +42,26 @@ def validate(fabric: L.Fabric, model: Model, val_dataloader: DataLoader, epoch: 
                 batch_f1 = smp.metrics.f1_score(*batch_stats, reduction="micro-imagewise")
                 ious.update(batch_iou, num_images)
                 f1_scores.update(batch_f1, num_images)
-            fabric.print(
-                f'Val: [{epoch}] - [{iter}/{len(val_dataloader)}]: Mean IoU: [{ious.avg:.4f}] -- Mean F1: [{f1_scores.avg:.4f}]'
-            )
-
+            if iter % 50 == 0:
+                fabric.print(
+                    f'Val: [{epoch}] - [{iter}/{len(val_dataloader)}]: Mean IoU: [{ious.avg:.4f}] -- Mean F1: [{f1_scores.avg:.4f}]'
+                )
+            # if iter > 50 :
+            #     break #! only for debugging
     fabric.print(f'Validation [{epoch}]: Mean IoU: [{ious.avg:.4f}] -- Mean F1: [{f1_scores.avg:.4f}]')
 
     fabric.print(f"Saving checkpoint to {cfg.out_dir}")
-    state_dict = model.model.state_dict()
+    state_dict = {
+        'epoch': epoch,
+        'model_state_dict': model.model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict()
+    }
     if fabric.global_rank == 0:
-        torch.save(state_dict, os.path.join(cfg.out_dir, f"epoch-{epoch:06d}-f1{f1_scores.avg:.2f}-ckpt.pth"))
-    model.train()
+        checkpoint_name = f"epoch-{epoch:06d}-f1{f1_scores.avg:.2f}-ckpt.pth"
+        checkpoint_path = os.path.join(cfg.out_dir, checkpoint_name)
+        torch.save(state_dict, checkpoint_path)
 
+        # time.sleep(5)  # Wait for the filesystem to catch up
 
 def train_sam(
     cfg: Box,
@@ -60,15 +69,16 @@ def train_sam(
     model: Model,
     optimizer: _FabricOptimizer,
     scheduler: _FabricOptimizer,
+    start_epoch: int,
     train_dataloader: DataLoader,
     val_dataloader: DataLoader,
 ):
     """The SAM training loop."""
 
-    focal_loss = FocalLoss(cfg.num_classes)
-    dice_loss = DiceLoss(cfg.num_classes)
+    focal_loss = FocalLoss()
+    dice_loss = DiceLoss()
 
-    for epoch in range(1, cfg.num_epochs):
+    for epoch in range(start_epoch, cfg.num_epochs):
         batch_time = AverageMeter()
         data_time = AverageMeter()
         focal_losses = AverageMeter()
@@ -80,7 +90,7 @@ def train_sam(
 
         for iter, data in enumerate(train_dataloader):
             if epoch > 1 and epoch % cfg.eval_interval == 0 and not validated:
-                validate(fabric, model, val_dataloader, epoch)
+                validate(cfg, fabric, model, val_dataloader, epoch, optimizer)
                 validated = True
 
             data_time.update(time.time() - end)
@@ -112,12 +122,14 @@ def train_sam(
 
             if iter % cfg.log_interval == 0:
                 fabric.print(f'Epoch: [{epoch}][{iter+1}/{len(train_dataloader)}]'
-                            f' | Time [{batch_time.val:.3f}s ({batch_time.avg:.3f}s)]'
-                            f' | Data [{data_time.val:.3f}s ({data_time.avg:.3f}s)]'
-                            f' | Focal Loss [{focal_losses.val:.4f} ({focal_losses.avg:.4f})]'
-                            f' | Dice Loss [{dice_losses.val:.4f} ({dice_losses.avg:.4f})]'
-                            f' | IoU Loss [{iou_losses.val:.4f} ({iou_losses.avg:.4f})]'
-                            f' | Total Loss [{total_losses.val:.4f} ({total_losses.avg:.4f})]')
+                             f' | Time [{batch_time.val:.3f}s ({batch_time.avg:.3f}s)]'
+                             f' | Data [{data_time.val:.3f}s ({data_time.avg:.3f}s)]'
+                             f' | Focal Loss [{focal_losses.val:.4f} ({focal_losses.avg:.4f})]'
+                             f' | Dice Loss [{dice_losses.val:.4f} ({dice_losses.avg:.4f})]'
+                             f' | IoU Loss [{iou_losses.val:.4f} ({iou_losses.avg:.4f})]'
+                             f' | Total Loss [{total_losses.val:.4f} ({total_losses.avg:.4f})]')
+            # if iter > 50: 
+            #     break #! only for debugging
 
 
 def configure_opt(cfg: Box, model: Model):
@@ -153,15 +165,33 @@ def main(cfg: Box) -> None:
         model = Model(cfg)
         model.setup()
 
+
+    optimizer, scheduler = configure_opt(cfg, model)
+    # Check if there is a saved state before training starts, and if so, start training from that state.
+    if cfg.resume_checkpoint is not None:
+        checkpoint_path = os.path.join(cfg.resume_checkpoint)
+        if os.path.exists(checkpoint_path):
+            print("-----------------------------------")
+            print(f"Loading checkpoint from {checkpoint_path}")
+            print("-----------------------------------")
+            checkpoint = torch.load(checkpoint_path)
+            model.model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            start_epoch = checkpoint['epoch'] + 1
+    else:
+        start_epoch = 0
+        model, optimizer = fabric.setup(model, optimizer)
+
     train_data, val_data = load_datasets(cfg, model.model.image_encoder.img_size)
     train_data = fabric._setup_dataloader(train_data)
     val_data = fabric._setup_dataloader(val_data)
 
-    optimizer, scheduler = configure_opt(cfg, model)
-    model, optimizer = fabric.setup(model, optimizer)
+    # optimizer, scheduler = configure_opt(cfg, model)
+    # model, optimizer = fabric.setup(model, optimizer)
 
-    train_sam(cfg, fabric, model, optimizer, scheduler, train_data, val_data)
-    validate(fabric, model, val_data, epoch=0)
+    
+    train_sam(cfg, fabric, model, optimizer, scheduler, start_epoch, train_data, val_data)
+    validate(cfg, fabric, model, val_data, epoch=0)
 
 
 if __name__ == "__main__":
