@@ -4,6 +4,8 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+# modified by ziqi-jin
+
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -50,7 +52,6 @@ class Sam(nn.Module):
     def device(self) -> Any:
         return self.pixel_mean.device
 
-    @torch.no_grad()
     def forward(
         self,
         batched_input: List[Dict[str, Any]],
@@ -85,8 +86,8 @@ class Sam(nn.Module):
           (list(dict)): A list over input images, where each element is
             as dictionary with the following keys.
               'masks': (torch.Tensor) Batched binary mask predictions,
-                with shape BxCxHxW, where B is the number of input prompts,
-                C is determined by multimask_output, and (H, W) is the
+                with shape BxCxHxW, where B is the number of input promts,
+                C is determiend by multimask_output, and (H, W) is the
                 original size of the image.
               'iou_predictions': (torch.Tensor) The model's predictions
                 of mask quality, in shape BxC.

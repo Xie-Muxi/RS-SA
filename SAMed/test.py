@@ -14,7 +14,7 @@ from importlib import import_module
 from segment_anything import sam_model_registry
 from datasets.dataset_synapse import Synapse_dataset
 
-from icecream import ic
+# from icecream import ic
 
 
 class_to_name = {1: 'spleen', 2: 'right kidney', 3: 'left kidney', 4: 'gallbladder', 5: 'liver', 6: 'stomach', 7: 'aorta', 8: 'pancreas'}
