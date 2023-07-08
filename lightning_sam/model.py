@@ -11,7 +11,7 @@ class Model(nn.Module):
         self.cfg = cfg
 
     def setup(self):
-        self.model = sam_model_registry[self.cfg.model.type](checkpoint=self.cfg.model.checkpoint)
+        self.model = sam_model_registry[self.cfg.model.type](num_classes=self.cfg.num_classes, checkpoint=self.cfg.model.checkpoint)
         self.model.train()
         if self.cfg.model.freeze.image_encoder:
             for param in self.model.image_encoder.parameters():
