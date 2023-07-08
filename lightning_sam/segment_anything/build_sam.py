@@ -139,3 +139,6 @@ def _build_sam(
 #             new_state_dict[k] = rel_pos_params[0, 0, ...]
 #     sam_dict.update(new_state_dict)
 #     return sam_dict
+
+def load_from(sam, state_dict, image_size, vit_patch_size):
+    pass #TODO: load from
