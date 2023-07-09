@@ -63,6 +63,22 @@ def validate(cfg:Box, fabric: L.Fabric, model: Model, val_dataloader: DataLoader
 
         # time.sleep(5)  # Wait for the filesystem to catch up
 
+def one_hot_encoding(labels, num_classes):
+    """
+    One-hot encode the labels.
+
+    Arguments:
+        labels (torch.Tensor): a tensor of shape (batch_size, height, width)
+        num_classes (int): the number of classes
+
+    Returns:
+        torch.Tensor: a tensor of shape (batch_size, num_classes, height, width)
+    """
+    batch_size, height, width = labels.size()
+    one_hot_labels = torch.zeros(batch_size, num_classes, height, width, device=labels.device)
+    return one_hot_labels.scatter_(1, labels.unsqueeze(1), 1)
+
+
 def train_sam(
     cfg: Box,
     fabric: L.Fabric,
@@ -102,6 +118,12 @@ def train_sam(
             loss_dice = torch.tensor(0., device=fabric.device)
             loss_iou = torch.tensor(0., device=fabric.device)
             for pred_mask, gt_mask, iou_prediction in zip(pred_masks, gt_masks, iou_predictions):
+                gt_mask = gt_mask.to(torch.int64)
+                # out_of_range = (gt_mask < 0) | (gt_mask >= cfg.num_classes)
+                # if out_of_range.any():
+                #     print(f"Out of range values found in gt_mask: {gt_mask[out_of_range]}")
+
+                gt_mask = one_hot_encoding(gt_mask, cfg.num_classes)
                 batch_iou = calc_iou(pred_mask, gt_mask)
                 loss_focal += focal_loss(pred_mask, gt_mask, num_masks)
                 loss_dice += dice_loss(pred_mask, gt_mask, num_masks)
