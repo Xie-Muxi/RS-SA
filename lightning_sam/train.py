@@ -118,13 +118,27 @@ def train_sam(
             loss_dice = torch.tensor(0., device=fabric.device)
             loss_iou = torch.tensor(0., device=fabric.device)
             for pred_mask, gt_mask, iou_prediction in zip(pred_masks, gt_masks, iou_predictions):
+                # 打印 pred_mask 和 gt_mask 的形状
+                # print(f"pred_mask shape: {pred_mask.shape}")
+                # print(f"gt_mask shape: {gt_mask.shape}")
+                
                 gt_mask = gt_mask.to(torch.int64)
-                # out_of_range = (gt_mask < 0) | (gt_mask >= cfg.num_classes)
-                # if out_of_range.any():
-                #     print(f"Out of range values found in gt_mask: {gt_mask[out_of_range]}")
+                
+                gt_mask_one_hot = one_hot_encoding(gt_mask, cfg.num_classes)
+                batch_iou = calc_iou(pred_mask, gt_mask_one_hot)
 
-                gt_mask = one_hot_encoding(gt_mask, cfg.num_classes)
-                batch_iou = calc_iou(pred_mask, gt_mask)
+                # print(f"pred_mask shape: {pred_mask.shape}")
+                # print(f"gt_mask shape: {gt_mask.shape}")
+
+                gt_mask = torch.argmax(gt_mask_one_hot, dim=1).float()
+                pred_mask = torch.argmax(pred_mask, dim=1).float()
+
+                gt_mask = gt_mask.view(batch_size, -1)
+                pred_mask = pred_mask.view(batch_size, -1)
+
+                print(f"pred_mask shape: {pred_mask.shape}")
+                print(f"gt_mask shape: {gt_mask.shape}")
+
                 loss_focal += focal_loss(pred_mask, gt_mask, num_masks)
                 loss_dice += dice_loss(pred_mask, gt_mask, num_masks)
                 loss_iou += F.mse_loss(iou_prediction, batch_iou, reduction='sum') / num_masks

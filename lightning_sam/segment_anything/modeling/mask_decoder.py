@@ -157,7 +157,7 @@ class MaskDecoder(nn.Module):
 
         # Generate mask quality predictions
         iou_pred = self.iou_prediction_head(iou_token_out)
-        print("masks.shape: ", masks.shape)
+        # print("masks.shape: ", masks.shape)
         return masks, iou_pred
 
 
