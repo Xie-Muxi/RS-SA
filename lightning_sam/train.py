@@ -133,9 +133,6 @@ def train_sam(
                 gt_mask = torch.argmax(gt_mask_one_hot, dim=1).float()
                 pred_mask = torch.argmax(pred_mask, dim=1).float()
 
-                gt_mask = gt_mask.view(batch_size, -1)
-                pred_mask = pred_mask.view(batch_size, -1)
-
                 print(f"pred_mask shape: {pred_mask.shape}")
                 print(f"gt_mask shape: {gt_mask.shape}")
 
