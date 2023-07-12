@@ -118,7 +118,7 @@ def train_sam(
             loss_dice = torch.tensor(0., device=fabric.device)
             loss_iou = torch.tensor(0., device=fabric.device)
             for pred_mask, gt_mask, iou_prediction in zip(pred_masks, gt_masks, iou_predictions):
-                # 打印 pred_mask 和 gt_mask 的形状
+                
                 # print(f"pred_mask shape: {pred_mask.shape}")
                 # print(f"gt_mask shape: {gt_mask.shape}")
                 

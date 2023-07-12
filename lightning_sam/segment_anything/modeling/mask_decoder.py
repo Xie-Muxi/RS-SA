@@ -64,7 +64,6 @@ class MaskDecoder(nn.Module):
                 MLP(transformer_dim, transformer_dim, transformer_dim // 8, 3)
                 # for i in range(self.num_mask_tokens)
                 for _ in range(self.num_classes) #TODO ：修改为num_classes
-                # for i in range(self.num_mask_tokens)
             ]
         )
 
@@ -121,7 +120,6 @@ class MaskDecoder(nn.Module):
         image_pe: torch.Tensor,
         sparse_prompt_embeddings: torch.Tensor,
         dense_prompt_embeddings: torch.Tensor,
-        mask_scale=1,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Predicts masks. See 'forward' for more details."""
         # Concatenate output tokens
@@ -147,8 +145,8 @@ class MaskDecoder(nn.Module):
 
         # for i in range(self.num_mask_tokens):
         #     hyper_in_list.append(self.output_hypernetworks_mlps[i](mask_tokens_out[:, i, :]))
-        # TODO:
-        # modified by Xie-Muxi
+
+        #! modified
         for i in range(self.num_classes):
             hyper_in_list.append(self.output_hypernetworks_mlps[i](mask_tokens_out[:, i, :]))
         hyper_in = torch.stack(hyper_in_list, dim=1)
