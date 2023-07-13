@@ -141,7 +141,7 @@ def train_sam(
                 # print(f"iou_prediction shape: {iou_prediction.shape}")
                 # print(f"batch_iou shape: {batch_iou.shape}")
 
-                loss_iou += F.mse_loss(iou_prediction[:, :-1], batch_iou, reduction='sum') / num_masks
+                loss_iou += F.mse_loss(iou_prediction, batch_iou, reduction='sum') / num_masks
 
 
             loss_total = 20. * loss_focal + loss_dice + loss_iou
