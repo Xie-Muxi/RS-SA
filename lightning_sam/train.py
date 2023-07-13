@@ -118,29 +118,30 @@ def train_sam(
             loss_dice = torch.tensor(0., device=fabric.device)
             loss_iou = torch.tensor(0., device=fabric.device)
             for pred_mask, gt_mask, iou_prediction in zip(pred_masks, gt_masks, iou_predictions):
-                
+                # print(f"pred_mask shape: {pred_mask.shape}")
+                # print(f"gt_mask shape: {gt_mask.shape}")
                 gt_mask = gt_mask.to(torch.int64)
 
                 gt_mask_one_hot = one_hot_encoding(gt_mask, cfg.num_classes)
                 batch_iou = calc_iou(pred_mask, gt_mask_one_hot)
 
-                print(f"pred_mask shape: {pred_mask.shape}")
-                print(f"gt_mask_one_hot shape: {gt_mask_one_hot.shape}")
+                # print(f"pred_mask shape: {pred_mask.shape}")
+                # print(f"gt_mask_one_hot shape: {gt_mask_one_hot.shape}")
 
                 # Convert one-hot labels back to class labels
                 gt_mask_class = torch.argmax(gt_mask_one_hot, dim=1)
 
-                print(f"reshaped pred_mask shape: {pred_mask.shape}")
-                print(f"reshaped gt_mask_class shape: {gt_mask_class.shape}")
+                # print(f"reshaped pred_mask shape: {pred_mask.shape}")
+                # print(f"reshaped gt_mask_class shape: {gt_mask_class.shape}")
 
                 loss_focal += focal_loss(pred_mask, gt_mask_class, num_masks)
                 loss_dice += dice_loss(pred_mask, gt_mask_class, num_masks)
 
                 # Print the shapes of iou_prediction and batch_iou
-                print(f"iou_prediction shape: {iou_prediction.shape}")
-                print(f"batch_iou shape: {batch_iou.shape}")
+                # print(f"iou_prediction shape: {iou_prediction.shape}")
+                # print(f"batch_iou shape: {batch_iou.shape}")
 
-                loss_iou += F.mse_loss(iou_prediction, batch_iou, reduction='sum') / num_masks
+                loss_iou += F.mse_loss(iou_prediction[:, :-1], batch_iou, reduction='sum') / num_masks
 
 
             loss_total = 20. * loss_focal + loss_dice + loss_iou

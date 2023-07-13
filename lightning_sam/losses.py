@@ -29,16 +29,16 @@ class FocalLoss(nn.Module):
         # Reshape inputs and targets
         num_classes = inputs.shape[1]  # Assuming inputs has shape [batch_size, num_classes, height, width]
 
-        print(num_classes)
+        # print(num_classes)
 
-        print('----------- before -----------')
-        print(inputs.shape)
-        print(targets.shape)
+        # print('----------- before -----------')
+        # print(inputs.shape)
+        # print(targets.shape)
         inputs = inputs.permute(0, 2, 3, 1).contiguous().view(-1, num_classes)  # Reshape inputs to [batch_size * height * width, num_classes]
         targets = targets.view(-1).long()  # Reshape targets to [batch_size * height * width]
-        print('----------- after -----------')
-        print(inputs.shape)
-        print(targets.shape)
+        # print('----------- after -----------')
+        # print(inputs.shape)
+        # print(targets.shape)
 
         # Compute the focal loss
         CE_loss = F.cross_entropy(inputs, targets, reduction='none')
@@ -53,17 +53,6 @@ class DiceLoss(nn.Module):
         super().__init__()
 
     # #TODO: Overwrite
-    # def forward(self, inputs, targets, smooth=1):
-        
-    #     inputs = F.softmax(inputs, dim=1)
-    #     inputs = torch.clamp(inputs, min=0, max=1)
-    #     inputs = inputs.view(-1)
-    #     targets = targets.view(-1)
-
-    #     intersection = (inputs * targets).sum()
-    #     dice = (2. * intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-
-    #     return 1 - dice
 
 #     def forward(self, inputs, targets, smooth=1):
 #         inputs = F.sigmoid(inputs)
@@ -79,17 +68,17 @@ class DiceLoss(nn.Module):
         # Reshape inputs and targets
         num_classes = inputs.shape[1]  # Assuming inputs has shape [batch_size, num_classes, height, width]
 
-        print(num_classes)
-        print('----------- before -----------')
-        print(inputs.shape)
-        print(targets.shape)
+        # print(num_classes)
+        # print('----------- before -----------')
+        # print(inputs.shape)
+        # print(targets.shape)
 
         inputs = inputs.permute(0, 2, 3, 1).contiguous().view(-1, num_classes)  # Reshape inputs to [batch_size * height * width, num_classes]
         targets = targets.view(-1).long()  # Reshape targets to [batch_size * height * width]
 
-        print('----------- after -----------')
-        print(inputs.shape)
-        print(targets.shape)
+        # print('----------- after -----------')
+        # print(inputs.shape)
+        # print(targets.shape)
 
         # Compute the dice loss for each class separately
         dice_loss = 0
