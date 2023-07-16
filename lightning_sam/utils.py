@@ -96,5 +96,5 @@ def visualize(cfg: Box):
 
 
 if __name__ == "__main__":
-    from config import cfg
+    from lightning_sam.config.config import cfg
     visualize(cfg)

@@ -55,6 +55,11 @@ evaluator = dict(
     val_evaluator=evaluator_,
 )
 
+val_evaluator_seg = dict(
+    type='IoUMetric',
+    iou_metrics=['mIoU']
+)
+
 
 image_size = (1024, 1024)
 
@@ -243,7 +248,7 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=8,
+    devices=4, #! 8 to 4
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
@@ -307,7 +312,7 @@ test_batch_size_per_gpu = 6
 test_num_workers = 4
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/WHU'
+data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
 dataset_type = 'WHUInsSegDataset'

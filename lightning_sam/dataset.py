@@ -1,7 +1,7 @@
 # dataset.py
 
 import os
-
+from PIL import Image
 import cv2
 import numpy as np
 import torch
@@ -108,3 +108,29 @@ def load_datasets(cfg, img_size):
                                 num_workers=cfg.num_workers,
                                 collate_fn=collate_fn)
     return train_dataloader, val_dataloader
+
+
+class PotsdamDataset(Dataset):
+    def __init__(self, img_dir, ann_dir, transforms=None):
+        self.img_dir = img_dir
+        self.ann_dir = ann_dir
+        self.transforms = transforms
+
+        # Load all file names for images and masks
+        self.ids = [os.path.splitext(file)[0] for file in os.listdir(img_dir)
+                    if file.endswith(".png")]
+
+    def __getitem__(self, index):
+        img_id = self.ids[index]
+        
+        # Open image and mask
+        img = Image.open(os.path.join(self.img_dir, img_id + ".png")).convert("RGB")
+        mask = Image.open(os.path.join(self.ann_dir, img_id + ".png"))
+
+        if self.transforms is not None:
+            img, mask = self.transforms(img, mask)
+        
+        return img, mask
+
+    def __len__(self):
+        return len(self.ids)

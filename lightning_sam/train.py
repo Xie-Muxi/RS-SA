@@ -7,7 +7,7 @@ import segmentation_models_pytorch as smp
 import torch
 import torch.nn.functional as F
 from box import Box
-from config import cfg
+from lightning_sam.config.config import cfg
 from dataset import load_datasets
 from lightning.fabric.fabric import _FabricOptimizer
 from lightning.fabric.loggers import TensorBoardLogger
