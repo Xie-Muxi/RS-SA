@@ -25,6 +25,7 @@ config = {
         },
     },
     "dataset": {
+        "name":"coco",
         "train": {
             "root_dir": "/nfs/home/3002_hehui/xmx/COCO2017/train2017",
             "annotation_file": "/nfs/home/3002_hehui/xmx/COCO2017/annotations/instances_train2017.json"
