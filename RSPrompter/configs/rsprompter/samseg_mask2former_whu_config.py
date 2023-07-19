@@ -11,7 +11,8 @@ sub_model_optim = {
     'panoptic_head': {'lr_mult': 1},
 }
 
-max_epochs = 400
+# max_epochs = 400
+max_epochs = 50
 
 optimizer = dict(
     type='AdamW',
@@ -44,11 +45,23 @@ param_scheduler_callback = dict(
     type='ParamSchedulerHook'
 )
 
-evaluator_ = dict(
+# evaluator_ = dict(
+#         type='CocoPLMetric',
+#         metric=['bbox', 'segm'],
+#         proposal_nums=[1, 10, 100]
+# )
+
+evaluator_ = [
+    dict(
+        type='IoUMetric',
+        iou_metrics=['mIoU','mFscore']
+    ),
+    dict(
         type='CocoPLMetric',
         metric=['bbox', 'segm'],
         proposal_nums=[1, 10, 100]
 )
+]
 
 evaluator = dict(
     # train_evaluator=evaluator_,
@@ -212,12 +225,12 @@ model_cfg = dict(
         filter_low_score=True),
     init_cfg=None)
 
-task_name = 'whu_ins'
+task_name = 'whu_ins-test'
 exp_name = 'E20230531_2'
 logger = dict(
     type='WandbLogger',
     project=task_name,
-    group='samcls-mask2former',
+    group='samcls-mask2former-test',
     name=exp_name
 )
 # logger = None
@@ -315,6 +328,7 @@ persistent_workers = True
 data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
+
 dataset_type = 'WHUInsSegDataset'
 
 val_loader = dict(

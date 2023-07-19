@@ -159,8 +159,8 @@ model_cfg = dict(
         filter_low_score=True),
 )
 
-task_name = 'whu_ins'
-exp_name = 'E20230603_0'
+task_name = 'rsprompter_query_whu'
+exp_name = 'E20230719_0'
 logger = dict(
     type='WandbLogger',
     project=task_name,
@@ -196,7 +196,8 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=8,
+    # devices=8, #!
+    devices=4,
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
@@ -260,7 +261,7 @@ test_batch_size_per_gpu = 3
 test_num_workers = 2
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/WHU'
+data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
 
