@@ -2,7 +2,7 @@
 .idea
 __pycache__
 results
-./data
+./data/*
 *.pth
 pretrain
 *.ckpt
