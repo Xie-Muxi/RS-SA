@@ -17,7 +17,7 @@ from trainer import trainer_synapse
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str,
                     default='/nfs/home/3002_hehui/xmx/data/potsdam', help='root dir for data')
-parser.add_argument('--output', type=str, default='/output/sam/results')
+parser.add_argument('--output', type=str, default='/nfs/home/3002_hehui/xmx/out_tem')
 parser.add_argument('--dataset', type=str,
                     default='Synapse', help='experiment_name')
 parser.add_argument('--list_dir', type=str,
