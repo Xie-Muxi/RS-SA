@@ -16,7 +16,7 @@ from trainer import trainer_synapse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str,
-                    default='/data/LarryXu/Synapse/preprocessed_data/train_npz', help='root dir for data')
+                    default='~/xmx/data/Synapse/preprocessed_data/train_npz', help='root dir for data')
 parser.add_argument('--output', type=str, default='/output/sam/results')
 parser.add_argument('--dataset', type=str,
                     default='Synapse', help='experiment_name')

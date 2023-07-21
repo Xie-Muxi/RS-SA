@@ -7,7 +7,8 @@ from scipy import ndimage
 from scipy.ndimage.interpolation import zoom
 from torch.utils.data import Dataset
 from einops import repeat
-from icecream import ic
+# from icecream import ic
+from PIL import Image
 
 
 def random_rot_flip(image, label):
@@ -53,33 +54,61 @@ class RandomGenerator(object):
         return sample
 
 
+# class Synapse_dataset(Dataset):
+#     def __init__(self, base_dir, list_dir, split, transform=None):
+#         self.transform = transform  # using transform in torch!
+#         self.split = split
+#         self.sample_list = open(os.path.join(list_dir, self.split+'.txt')).readlines()
+#         self.data_dir = base_dir
+
+#     def __len__(self):
+#         return len(self.sample_list)
+
+#     def __getitem__(self, idx):
+#         if self.split == "train":
+#             slice_name = self.sample_list[idx].strip('\n')
+#             data_path = os.path.join(self.data_dir, slice_name+'.npz')
+#             data = np.load(data_path)
+#             image, label = data['image'], data['label']
+#         else:
+#             vol_name = self.sample_list[idx].strip('\n')
+#             filepath = self.data_dir + "/{}.npy.h5".format(vol_name)
+#             data = h5py.File(filepath)
+#             image, label = data['image'][:], data['label'][:]
+
+#         # Input dim should be consistent
+#         # Since the channel dimension of nature image is 3, that of medical image should also be 3
+
+#         sample = {'image': image, 'label': label}
+#         if self.transform:
+#             sample = self.transform(sample)
+#         sample['case_name'] = self.sample_list[idx].strip('\n')
+#         return sample
+
+# class Potsdam(Dataset):
+#     pass # TODO
+
+
 class Synapse_dataset(Dataset):
-    def __init__(self, base_dir, list_dir, split, transform=None):
-        self.transform = transform  # using transform in torch!
+    def __init__(self, base_dir, split, transform=None):
+        self.transform = transform
         self.split = split
-        self.sample_list = open(os.path.join(list_dir, self.split+'.txt')).readlines()
-        self.data_dir = base_dir
+        self.img_dir = os.path.join(base_dir, 'img_dir', split)
+        self.ann_dir = os.path.join(base_dir, 'ann_dir', split)
+        self.imgs = list(sorted(os.listdir(self.img_dir)))
+        self.masks = list(sorted(os.listdir(self.ann_dir)))
 
     def __len__(self):
-        return len(self.sample_list)
+        return len(self.imgs)
 
     def __getitem__(self, idx):
-        if self.split == "train":
-            slice_name = self.sample_list[idx].strip('\n')
-            data_path = os.path.join(self.data_dir, slice_name+'.npz')
-            data = np.load(data_path)
-            image, label = data['image'], data['label']
-        else:
-            vol_name = self.sample_list[idx].strip('\n')
-            filepath = self.data_dir + "/{}.npy.h5".format(vol_name)
-            data = h5py.File(filepath)
-            image, label = data['image'][:], data['label'][:]
+        img_path = os.path.join(self.img_dir, self.imgs[idx])
+        mask_path = os.path.join(self.ann_dir, self.masks[idx])
+        img = Image.open(img_path).convert("RGB")
+        mask = Image.open(mask_path)
 
-        # Input dim should be consistent
-        # Since the channel dimension of nature image is 3, that of medical image should also be 3
-
-        sample = {'image': image, 'label': label}
+        sample = {'image': np.array(img), 'label': np.array(mask)}
         if self.transform:
             sample = self.transform(sample)
-        sample['case_name'] = self.sample_list[idx].strip('\n')
+        sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
