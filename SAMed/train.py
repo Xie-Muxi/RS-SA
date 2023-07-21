@@ -43,7 +43,7 @@ parser.add_argument('--seed', type=int,
                     default=1234, help='random seed')
 parser.add_argument('--vit_name', type=str,
                     default='vit_b', help='select one vit model')
-parser.add_argument('--ckpt', type=str, default='checkpoints/sam_vit_b_01ec64.pth',
+parser.add_argument('--ckpt', type=str, default='/nfs/home/3002_hehui/xmx/segment-anything/segment_anything/ckpt/sam_vit_b_01ec64.pth',
                     help='Pretrained checkpoint')
 parser.add_argument('--lora_ckpt', type=str, default=None, help='Finetuned lora checkpoint')
 parser.add_argument('--rank', type=int, default=4, help='Rank for LoRA adaptation')
