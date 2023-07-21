@@ -316,7 +316,7 @@ val_loader = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_parent,
-            ann_file='xmx/RS-SA/RSPrompter/data/NWPU/annotations/NWPU_instances_val.json',
+            ann_file='/nfs/home/3002_hehui/xmx/RS-SA/RSPrompter/data/NWPU/annotations/NWPU_instances_val.json',
             data_prefix=dict(img_path='positive image set'),
             test_mode=True,
             filter_cfg=dict(filter_empty_gt=True, min_size=32),
