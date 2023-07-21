@@ -48,7 +48,8 @@ class MaskDecoder(nn.Module):
         self.num_multimask_outputs = num_multimask_outputs
 
         self.iou_token = nn.Embedding(1, transformer_dim)
-        self.num_mask_tokens = num_multimask_outputs + 1
+        # self.num_mask_tokens = num_multimask_outputs + 1
+        self.num_mask_tokens = num_multimask_outputs #! we use num_classes + 1 , so the num_mask_tokens is num_classes, not num_classes + 1
         self.mask_tokens = nn.Embedding(self.num_mask_tokens, transformer_dim)
         self.num_classes = num_classes
 
@@ -70,8 +71,6 @@ class MaskDecoder(nn.Module):
         self.iou_prediction_head = MLP(
             transformer_dim, iou_head_hidden_dim, self.num_mask_tokens, iou_head_depth
         )
-        print("self.num_mask_tokens", self.num_mask_tokens)
-        print("self.num_classes", self.num_classes)
 
     def forward(
         self,

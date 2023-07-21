@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+__pycache__
+results
+./data
+*.pth
+pretrain
+*.ckpt
+cache_data
+output
