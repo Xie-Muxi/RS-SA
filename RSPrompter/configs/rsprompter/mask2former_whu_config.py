@@ -191,7 +191,7 @@ model_cfg = dict(
     whole_model=model,
 )
 
-task_name = 'whu_ins'
+task_name = 'whu-ins'
 exp_name = 'E20230525_1'
 logger = dict(
     type='WandbLogger',
@@ -292,7 +292,7 @@ test_batch_size_per_gpu = 8
 test_num_workers = 4
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/WHU'
+data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
 

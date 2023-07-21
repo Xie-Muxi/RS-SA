@@ -204,7 +204,7 @@ model_cfg = dict(
 )
 
 task_name = 'rsprompter_anchor_whu'
-exp_name = 'E20230719_0'
+exp_name = 'E20230719_01'
 logger = dict(
     type='WandbLogger',
     project=task_name,
@@ -353,3 +353,5 @@ datamodule_cfg = dict(
     # test_loader=val_loader
     predict_loader=val_loader
 )
+
+resume = None

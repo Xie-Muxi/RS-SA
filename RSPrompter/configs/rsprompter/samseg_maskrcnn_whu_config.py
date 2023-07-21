@@ -9,7 +9,8 @@ sub_model_optim = {
     'panoptic_head': {'lr_mult': 1},
 }
 
-max_epochs = 400
+max_epochs = 100
+# max_epochs = 400
 
 optimizer = dict(
     type='AdamW',
@@ -204,7 +205,7 @@ model_cfg = dict(
     )
 )
 
-task_name = 'whu_ins'
+task_name = 'whu-ins'
 exp_name = 'E20230530_2'
 logger = dict(
     type='WandbLogger',
@@ -240,7 +241,7 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=8,
+    devices=4,
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
@@ -304,7 +305,7 @@ test_batch_size_per_gpu = 6
 test_num_workers = 4
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/WHU'
+data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
 dataset_type = 'WHUInsSegDataset'
@@ -344,3 +345,5 @@ datamodule_cfg = dict(
     # test_loader=val_loader
     predict_loader=val_loader
 )
+
+resume = None

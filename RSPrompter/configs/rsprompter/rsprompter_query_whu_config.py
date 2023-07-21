@@ -160,11 +160,11 @@ model_cfg = dict(
 )
 
 task_name = 'rsprompter_query_whu'
-exp_name = 'E20230719_0'
+exp_name = 'E20230719_01'
 logger = dict(
     type='WandbLogger',
     project=task_name,
-    group='sam',
+    group='sam-query',
     name=exp_name
 )
 # logger = None
@@ -302,3 +302,5 @@ datamodule_cfg = dict(
     # test_loader=val_loader
     predict_loader=val_loader
 )
+
+resume = None

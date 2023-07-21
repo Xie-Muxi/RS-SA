@@ -12,7 +12,7 @@ sub_model_optim = {
 }
 
 # max_epochs = 400
-max_epochs = 50
+max_epochs = 100
 
 optimizer = dict(
     type='AdamW',
@@ -45,32 +45,15 @@ param_scheduler_callback = dict(
     type='ParamSchedulerHook'
 )
 
-# evaluator_ = dict(
-#         type='CocoPLMetric',
-#         metric=['bbox', 'segm'],
-#         proposal_nums=[1, 10, 100]
-# )
-
-evaluator_ = [
-    dict(
-        type='IoUMetric',
-        iou_metrics=['mIoU','mFscore']
-    ),
-    dict(
+evaluator_ = dict(
         type='CocoPLMetric',
         metric=['bbox', 'segm'],
         proposal_nums=[1, 10, 100]
 )
-]
 
 evaluator = dict(
     # train_evaluator=evaluator_,
     val_evaluator=evaluator_,
-)
-
-val_evaluator_seg = dict(
-    type='IoUMetric',
-    iou_metrics=['mIoU']
 )
 
 
@@ -225,12 +208,12 @@ model_cfg = dict(
         filter_low_score=True),
     init_cfg=None)
 
-task_name = 'whu_ins-test'
-exp_name = 'E20230531_2'
+task_name = 'whu-ins'
+exp_name = 'E20230719_0'
 logger = dict(
     type='WandbLogger',
     project=task_name,
-    group='samcls-mask2former-test',
+    group='samcls-mask2former',
     name=exp_name
 )
 # logger = None
@@ -261,7 +244,7 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=4, #! 8 to 4
+    devices=4,
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
@@ -328,7 +311,6 @@ persistent_workers = True
 data_parent = 'data/WHU'
 train_data_prefix = 'train/'
 val_data_prefix = 'test/'
-
 dataset_type = 'WHUInsSegDataset'
 
 val_loader = dict(
@@ -366,3 +348,5 @@ datamodule_cfg = dict(
     # test_loader=val_loader
     predict_loader=val_loader
 )
+
+resume = None
