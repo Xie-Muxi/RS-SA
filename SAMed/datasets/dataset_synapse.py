@@ -47,7 +47,7 @@ class RandomGenerator(object):
         label_h, label_w = label.shape
         low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
         image = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)
-        image = repeat(image, 'c h w -> (repeat c) h w', repeat=3)
+        # image = repeat(image, 'c h w -> (repeat c) h w', repeat=3)
         label = torch.from_numpy(label.astype(np.float32))
         low_res_label = torch.from_numpy(low_res_label.astype(np.float32))
         sample = {'image': image, 'label': label.long(), 'low_res_label': low_res_label.long()}
