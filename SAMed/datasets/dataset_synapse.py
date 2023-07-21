@@ -90,7 +90,7 @@ class RandomGenerator(object):
 
 
 class Synapse_dataset(Dataset):
-    def __init__(self, base_dir, split, transform=None):
+    def __init__(self, base_dir, list_dir, split, transform=None):
         self.transform = transform
         self.split = split
         self.img_dir = os.path.join(base_dir, 'img_dir', split)
