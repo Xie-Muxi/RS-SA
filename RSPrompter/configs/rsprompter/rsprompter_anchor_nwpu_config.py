@@ -303,7 +303,7 @@ test_batch_size_per_gpu = 2
 test_num_workers = 2
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/NWPU10'
+data_parent = 'data/NWPU'
 train_data_prefix = ''
 val_data_prefix = ''
 dataset_type = 'NWPUInsSegDataset'
@@ -316,7 +316,7 @@ val_loader = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_parent,
-            ann_file='NWPU_instances_val.json',
+            ann_file='annotations/NWPU_instances_val.json',
             data_prefix=dict(img_path='positive image set'),
             test_mode=True,
             filter_cfg=dict(filter_empty_gt=True, min_size=32),
