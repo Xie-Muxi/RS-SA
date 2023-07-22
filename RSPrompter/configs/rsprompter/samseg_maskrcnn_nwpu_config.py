@@ -207,7 +207,7 @@ model_cfg = dict(
 )
 
 task_name = 'nwpu-ins'
-exp_name = 'E20230530_0'
+exp_name = 'samseg_maskrcnn_nwpu-E20230722_0'
 logger = dict(
     type='WandbLogger',
     project=task_name,
@@ -242,7 +242,7 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=8,
+    devices=4,
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
