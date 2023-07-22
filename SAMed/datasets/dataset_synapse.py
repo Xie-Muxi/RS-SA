@@ -105,6 +105,8 @@ class Synapse_dataset(Dataset):
         img_path = os.path.join(self.img_dir, self.imgs[idx])
         mask_path = os.path.join(self.ann_dir, self.masks[idx])
         img = Image.open(img_path).convert("RGB")
+        # Normalization to [0, 1]
+        img = np.array(img) / 255.0
         mask = Image.open(mask_path)
 
         sample = {'image': np.array(img), 'label': np.array(mask)}
