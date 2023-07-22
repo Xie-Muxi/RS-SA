@@ -42,8 +42,12 @@ class RandomGenerator(object):
             image, label = random_rotate(image, label)
         x, y, _ = image.shape
         if x != self.output_size[0] or y != self.output_size[1]:
-            image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y), order=3)  # why not 3?
+            # image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y), order=3)  # why not 3?
+            # label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
+            # ! 3D
+            image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=3)
             label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
+
         label_h, label_w = label.shape
         low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
         image = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)
@@ -105,6 +109,12 @@ class Synapse_dataset(Dataset):
         img_path = os.path.join(self.img_dir, self.imgs[idx])
         mask_path = os.path.join(self.ann_dir, self.masks[idx])
         img = Image.open(img_path).convert("RGB")
+        # Normalization to [0, 1]
+        img = np.array(img) / 255.0
+        # Convert to CHW format
+        img = np.transpose(img, (2, 0, 1))
+
+        # print(img.shape)
         mask = Image.open(mask_path)
 
         sample = {'image': np.array(img), 'label': np.array(mask)}
