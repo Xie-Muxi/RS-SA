@@ -257,7 +257,7 @@ test_batch_size_per_gpu = 3
 test_num_workers = 2
 persistent_workers = True
 
-data_parent = '/nfs/home/3002_hehui/xmx/data/NWPU/'
+data_parent = '/nfs/home/3002_hehui/xmx/data/NWPU/NWPU VHR-10 dataset'
 train_data_prefix = ''
 val_data_prefix = ''
 
