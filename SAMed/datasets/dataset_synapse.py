@@ -46,7 +46,7 @@ class RandomGenerator(object):
             # label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
             # ! 3D
             image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=3)
-            label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y, 1), order=0)
+            label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
 
         label_h, label_w = label.shape
         low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
