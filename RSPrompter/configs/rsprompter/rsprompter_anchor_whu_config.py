@@ -203,8 +203,8 @@ model_cfg = dict(
     )
 )
 
-task_name = 'rsprompter_anchor_whu'
-exp_name = 'E20230719_01'
+task_name = 'whu-ins'
+exp_name = 'E20230720_01'
 logger = dict(
     type='WandbLogger',
     project=task_name,

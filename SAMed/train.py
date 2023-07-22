@@ -16,14 +16,14 @@ from trainer import trainer_synapse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--root_path', type=str,
-                    default='/data/LarryXu/Synapse/preprocessed_data/train_npz', help='root dir for data')
-parser.add_argument('--output', type=str, default='/output/sam/results')
+                    default='/nfs/home/3002_hehui/xmx/data/potsdam', help='root dir for data')
+parser.add_argument('--output', type=str, default='/nfs/home/3002_hehui/xmx/out_tem')
 parser.add_argument('--dataset', type=str,
                     default='Synapse', help='experiment_name')
 parser.add_argument('--list_dir', type=str,
                     default='./lists/lists_Synapse', help='list dir')
 parser.add_argument('--num_classes', type=int,
-                    default=8, help='output channel of network')
+                    default=6, help='output channel of network')
 parser.add_argument('--max_iterations', type=int,
                     default=30000, help='maximum epoch number to train')
 parser.add_argument('--max_epochs', type=int,
@@ -32,7 +32,7 @@ parser.add_argument('--stop_epoch', type=int,
                     default=160, help='maximum epoch number to train')
 parser.add_argument('--batch_size', type=int,
                     default=12, help='batch_size per gpu')
-parser.add_argument('--n_gpu', type=int, default=2, help='total gpu')
+parser.add_argument('--n_gpu', type=int, default=4, help='total gpu')
 parser.add_argument('--deterministic', type=int, default=1,
                     help='whether use deterministic training')
 parser.add_argument('--base_lr', type=float, default=0.005,
@@ -43,7 +43,7 @@ parser.add_argument('--seed', type=int,
                     default=1234, help='random seed')
 parser.add_argument('--vit_name', type=str,
                     default='vit_b', help='select one vit model')
-parser.add_argument('--ckpt', type=str, default='checkpoints/sam_vit_b_01ec64.pth',
+parser.add_argument('--ckpt', type=str, default='/nfs/home/3002_hehui/xmx/segment-anything/segment_anything/ckpt/sam_vit_b_01ec64.pth',
                     help='Pretrained checkpoint')
 parser.add_argument('--lora_ckpt', type=str, default=None, help='Finetuned lora checkpoint')
 parser.add_argument('--rank', type=int, default=4, help='Rank for LoRA adaptation')

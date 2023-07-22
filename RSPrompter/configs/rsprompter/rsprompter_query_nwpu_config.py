@@ -157,8 +157,8 @@ model_cfg = dict(
         filter_low_score=True),
 )
 
-task_name = 'nwpu_ins'
-exp_name = 'E20230623_1'
+task_name = 'nwpu-ins'
+exp_name = 'rsprompter_query_nwpu-E20230722_1'
 logger = dict(
     type='WandbLogger',
     project=task_name,
@@ -193,7 +193,7 @@ trainer_cfg = dict(
     # strategy='ddp_find_unused_parameters_true',
     # precision='32',
     # precision='16-mixed',
-    devices=8,
+    devices=4,
     default_root_dir=f'results/{task_name}/{exp_name}',
     # default_root_dir='results/tmp',
     max_epochs=max_epochs,
@@ -257,7 +257,7 @@ test_batch_size_per_gpu = 3
 test_num_workers = 2
 persistent_workers = True
 
-data_parent = '/mnt/search01/dataset/cky_data/NWPU10'
+data_parent = '/nfs/home/3002_hehui/xmx/data/NWPU/'
 train_data_prefix = ''
 val_data_prefix = ''
 
@@ -271,7 +271,7 @@ val_loader = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_parent,
-            ann_file='NWPU_instances_val.json',
+            ann_file='/nfs/home/3002_hehui/xmx/RS-SA/RSPrompter/data/NWPU/annotations/NWPU_instances_val.json',
             data_prefix=dict(img_path='positive image set'),
             test_mode=True,
             filter_cfg=dict(filter_empty_gt=True, min_size=32),
@@ -288,7 +288,7 @@ datamodule_cfg = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_parent,
-            ann_file='NWPU_instances_train.json',
+            ann_file='/nfs/home/3002_hehui/xmx/RS-SA/RSPrompter/data/NWPU/annotations/NWPU_instances_train.json',
             data_prefix=dict(img_path='positive image set'),
             filter_cfg=dict(filter_empty_gt=True, min_size=32),
             pipeline=train_pipeline,
