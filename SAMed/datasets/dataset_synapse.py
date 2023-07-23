@@ -105,6 +105,29 @@ class Synapse_dataset(Dataset):
     def __len__(self):
         return len(self.imgs)
 
+    # def __getitem__(self, idx):
+    #     img_path = os.path.join(self.img_dir, self.imgs[idx])
+    #     mask_path = os.path.join(self.ann_dir, self.masks[idx])
+    #     img = Image.open(img_path).convert("RGB")
+    #     # Normalization to [0, 1]
+    #     img = np.array(img) / 255.0
+    #     # Convert to CHW format
+    #     img = np.transpose(img, (2, 0, 1))
+
+    #     print(f'img.shape: {img.shape}')
+    #     mask = Image.open(mask_path)
+
+    #     mask = np.expand_dims(np.array(mask), 0)
+
+    #     print(f'mask.shape: {mask.shape}')
+
+    #     sample = {'image': np.array(img), 'label': np.array(mask)}
+
+    #     if self.transform:
+    #         sample = self.transform(sample)
+    #     sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
+    #     return sample
+    
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.imgs[idx])
         mask_path = os.path.join(self.ann_dir, self.masks[idx])
@@ -114,16 +137,18 @@ class Synapse_dataset(Dataset):
         # Convert to CHW format
         img = np.transpose(img, (2, 0, 1))
 
-        print(f'img.shape: {img.shape}')
         mask = Image.open(mask_path)
+        mask = np.array(mask)
+        # Convert to CHW format
+        mask = np.expand_dims(mask, 0)  # Add an extra dimension for the channel
 
-        mask = np.expand_dims(np.array(mask), 0)
-
-        print(f'mask.shape: {mask.shape}')
-
-        sample = {'image': np.array(img), 'label': np.array(mask)}
+        sample = {'image': img, 'label': mask}
 
         if self.transform:
+            # Modify the zoom factors to match the dimensions of the image and mask
+            zoom_factors = self.transform.zoom_factors
+            zoom_factors = zoom_factors + [1] * (img.ndim - len(zoom_factors))
+            self.transform.zoom_factors = zoom_factors
             sample = self.transform(sample)
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
