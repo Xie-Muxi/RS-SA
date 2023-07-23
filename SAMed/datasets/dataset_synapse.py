@@ -54,24 +54,21 @@ class Synapse_dataset(Dataset):
 
         mask = Image.open(mask_path)
         mask = np.array(mask)
-
         # Ensure the mask has the same size with img
         if mask.shape != img.shape[1:]:
             mask = np.resize(mask, img.shape[1:])
-
-        # Add an extra dimension for the channel
-        mask = np.expand_dims(mask, 0)
 
         sample = {'image': img, 'label': mask}
 
         if self.transform:
             sample = self.transform(sample)
 
-        # Remove the channel dimension from the mask
+        # Ensure the label is a 2D tensor
         sample['label'] = np.squeeze(sample['label'])
 
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
+
 
 
 # class RandomGenerator(object):
