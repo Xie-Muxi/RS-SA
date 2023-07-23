@@ -54,13 +54,22 @@ class Synapse_dataset(Dataset):
 
         mask = Image.open(mask_path)
         mask = np.array(mask)
-        # Convert to CHW format
-        # mask = np.expand_dims(mask, 0)  # Add an extra dimension for the channel
+
+        # Ensure the mask has the same size with img
+        if mask.shape != img.shape[1:]:
+            mask = np.resize(mask, img.shape[1:])
+
+        # Add an extra dimension for the channel
+        mask = np.expand_dims(mask, 0)
 
         sample = {'image': img, 'label': mask}
 
         if self.transform:
             sample = self.transform(sample)
+
+        # Remove the channel dimension from the mask
+        sample['label'] = np.squeeze(sample['label'])
+
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
 
