@@ -63,7 +63,7 @@ class RandomGenerator(object):
         image, label = sample['image'], sample['label']
         x, y = image.shape[1], image.shape[2]
         image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=1)
-        label = zoom(label, (1, self.output_size[0] / x, self.output_size[1] / y, 1), order=0)
+        label = zoom(label, (1, self.output_size[0] / x, self.output_size[1] / y), order=0)
         return {'image': image, 'label': label}
 
 
