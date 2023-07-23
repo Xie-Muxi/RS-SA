@@ -38,8 +38,10 @@ class Synapse_dataset(Dataset):
         self.split = split
         self.img_dir = os.path.join(base_dir, 'img_dir', split)
         self.ann_dir = os.path.join(base_dir, 'ann_dir', split)
-        self.imgs = list(sorted(os.listdir(self.img_dir)))
-        self.masks = list(sorted(os.listdir(self.ann_dir)))
+        # self.imgs = list(sorted(os.listdir(self.img_dir)))
+        # self.masks = list(sorted(os.listdir(self.ann_dir)))
+        self.imgs = [f for f in sorted(os.listdir(self.img_dir)) if f.endswith(('.png', '.jpg', '.jpeg'))]
+        self.masks = [f for f in sorted(os.listdir(self.ann_dir)) if f.endswith(('.png', '.jpg', '.jpeg'))]
 
     def __len__(self):
         return len(self.imgs)
