@@ -33,29 +33,37 @@ class RandomGenerator(object):
         self.output_size = output_size
         self.low_res = low_res
 
+    # def __call__(self, sample):
+    #     image, label = sample['image'], sample['label']
+
+    #     if random.random() > 0.5:
+    #         image, label = random_rot_flip(image, label)
+    #     elif random.random() > 0.5:
+    #         image, label = random_rotate(image, label)
+    #     x, y, _ = image.shape
+    #     if x != self.output_size[0] or y != self.output_size[1]:
+    #         # image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y), order=3)  # why not 3?
+    #         # label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
+    #         # ! 3D
+    #         image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=3)
+    #         label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
+
+    #     label_h, label_w = label.shape
+    #     low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
+    #     image = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)
+    #     # image = repeat(image, 'c h w -> (repeat c) h w', repeat=3)
+    #     label = torch.from_numpy(label.astype(np.float32))
+    #     low_res_label = torch.from_numpy(low_res_label.astype(np.float32))
+    #     sample = {'image': image, 'label': label.long(), 'low_res_label': low_res_label.long()}
+    #     return sample
+
     def __call__(self, sample):
         image, label = sample['image'], sample['label']
+        x, y = image.shape[1], image.shape[2]
+        image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=1)
+        label = zoom(label, (1, self.output_size[0] / x, self.output_size[1] / y, 1), order=0)
+        return {'image': image, 'label': label}
 
-        if random.random() > 0.5:
-            image, label = random_rot_flip(image, label)
-        elif random.random() > 0.5:
-            image, label = random_rotate(image, label)
-        x, y, _ = image.shape
-        if x != self.output_size[0] or y != self.output_size[1]:
-            # image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y), order=3)  # why not 3?
-            # label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
-            # ! 3D
-            image = zoom(image, (self.output_size[0] / x, self.output_size[1] / y, 1), order=3)
-            label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
-
-        label_h, label_w = label.shape
-        low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
-        image = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)
-        # image = repeat(image, 'c h w -> (repeat c) h w', repeat=3)
-        label = torch.from_numpy(label.astype(np.float32))
-        low_res_label = torch.from_numpy(low_res_label.astype(np.float32))
-        sample = {'image': image, 'label': label.long(), 'low_res_label': low_res_label.long()}
-        return sample
 
 
 # class Synapse_dataset(Dataset):
