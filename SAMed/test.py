@@ -61,7 +61,7 @@ def config_to_dict(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, default=None, help='The config file provided by the trained model')
-    parser.add_argument('--volume_path', type=str, default='testset/test_vol_h5/')
+    parser.add_argument('--volume_path', type=str, default='/nfs/home/3002_hehui/xmx/data/potsdam')
     parser.add_argument('--dataset', type=str, default='Synapse', help='Experiment name')
     parser.add_argument('--num_classes', type=int, default=6)
     parser.add_argument('--list_dir', type=str, default='./lists/lists_Synapse/', help='list_dir')
