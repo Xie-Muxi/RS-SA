@@ -1,3 +1,5 @@
+# dataset_synapse.py
+
 import os
 import random
 import h5py
@@ -172,18 +174,14 @@ class Synapse_dataset(Dataset):
 
         mask = Image.open(mask_path)
         mask = np.array(mask)
-        # Convert to CHW format
-        mask = np.expand_dims(mask, 0)  # Add an extra dimension for the channel
+
+        # Ensure the mask has the same size with img
+        if mask.shape != img.shape[1:]:
+            mask = np.resize(mask, img.shape[1:])
 
         sample = {'image': img, 'label': mask}
 
         if self.transform:
-            # Modify the zoom factors to match the dimensions of the image and mask
-            for t in self.transform.transforms:
-                if hasattr(t, 'zoom_factors'):
-                    zoom_factors = t.zoom_factors
-                    zoom_factors = zoom_factors + [1] * (img.ndim - len(zoom_factors))
-                    t.zoom_factors = zoom_factors
-                sample = self.transform(sample)
-            sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
-            return sample
+            sample = self.transform(sample)
+        sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
+        return sample
