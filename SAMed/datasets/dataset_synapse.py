@@ -55,7 +55,7 @@ class Synapse_dataset(Dataset):
         mask = Image.open(mask_path)
         mask = np.array(mask)
         # Convert to CHW format
-        mask = np.expand_dims(mask, 0)  # Add an extra dimension for the channel
+        # mask = np.expand_dims(mask, 0)  # Add an extra dimension for the channel
 
         sample = {'image': img, 'label': mask}
 
