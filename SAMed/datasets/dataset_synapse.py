@@ -12,24 +12,6 @@ from einops import repeat
 # from icecream import ic
 from PIL import Image
 
-
-def random_rot_flip(image, label):
-    k = np.random.randint(0, 4)
-    image = np.rot90(image, k)
-    label = np.rot90(label, k)
-    axis = np.random.randint(0, 2)
-    image = np.flip(image, axis=axis).copy()
-    label = np.flip(label, axis=axis).copy()
-    return image, label
-
-
-def random_rotate(image, label):
-    angle = np.random.randint(-20, 20)
-    image = ndimage.rotate(image, angle, order=0, reshape=False)
-    label = ndimage.rotate(label, angle, order=0, reshape=False)
-    return image, label
-
-
 class RandomGenerator(object):
     def __init__(self, output_size, low_res):
         self.output_size = output_size
@@ -39,7 +21,7 @@ class RandomGenerator(object):
         image, label = sample['image'], sample['label']
         x, y = image.shape[1], image.shape[2]
         image = zoom(image, (1, self.output_size[0] / x, self.output_size[1] / y), order=1)
-        label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)
+        label = zoom(label, (1, self.output_size[0] / x, self.output_size[1] / y), order=0)
         return {'image': image, 'label': label}
 
 class Synapse_dataset(Dataset):
@@ -74,7 +56,6 @@ class Synapse_dataset(Dataset):
             sample = self.transform(sample)
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
-
 
 
 # class RandomGenerator(object):
