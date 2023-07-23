@@ -176,6 +176,6 @@ class Synapse_dataset(Dataset):
                     zoom_factors = t.zoom_factors
                     zoom_factors = zoom_factors + [1] * (img.ndim - len(zoom_factors))
                     t.zoom_factors = zoom_factors
-            sample = self.transform(sample)
-        sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
-        return sample
+                sample = self.transform(sample)
+            sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
+            return sample
