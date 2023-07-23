@@ -74,7 +74,7 @@ if __name__ == '__main__':
     parser.add_argument('--deterministic', type=int, default=1, help='whether use deterministic training')
     parser.add_argument('--ckpt', type=str, default='/nfs/home/3002_hehui/xmx/segment-anything/segment_anything/ckpt/sam_vit_b_01ec64.pth',
                         help='Pretrained checkpoint')
-    parser.add_argument('--lora_ckpt', type=str, default='/nfs/home/3002_hehui/xmx/out_tem/Synapse_512_pretrain_vit_b_epo200_bs12_lr0.005/epoch_159.pthepoch_159.pth', help='The checkpoint from LoRA')
+    parser.add_argument('--lora_ckpt', type=str, default='/nfs/home/3002_hehui/xmx/out_tem/Synapse_512_pretrain_vit_b_epo200_bs12_lr0.005/epoch_159.pth', help='The checkpoint from LoRA')
     parser.add_argument('--vit_name', type=str, default='vit_b', help='Select one vit model')
     parser.add_argument('--rank', type=int, default=4, help='Rank for LoRA adaptation')
     parser.add_argument('--module', type=str, default='sam_lora_image_encoder')
