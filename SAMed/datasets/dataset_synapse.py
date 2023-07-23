@@ -117,7 +117,10 @@ class Synapse_dataset(Dataset):
         print(f'img.shape: {img.shape}')
         mask = Image.open(mask_path)
 
-        mask = np.array(mask)
+
+        np.expand_dims(np.array(mask), 0)
+
+        
         print(f'mask.shape: {mask.shape}')
 
         sample = {'image': np.array(img), 'label': np.array(mask)}
