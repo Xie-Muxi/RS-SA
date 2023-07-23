@@ -21,7 +21,8 @@ class_to_name = {1: 'spleen', 2: 'right kidney', 3: 'left kidney', 4: 'gallbladd
 
 
 def inference(args, multimask_output, db_config, model, test_save_path=None):
-    db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='test_vol')
+    # db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='test_vol')
+    db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='val')
     testloader = DataLoader(db_test, batch_size=1, shuffle=False, num_workers=1)
     logging.info(f'{len(testloader)} test iterations per epoch')
     model.eval()
