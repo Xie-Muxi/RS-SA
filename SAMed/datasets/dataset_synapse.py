@@ -114,10 +114,12 @@ class Synapse_dataset(Dataset):
         # Convert to CHW format
         img = np.transpose(img, (2, 0, 1))
 
-        # print(img.shape)
+        print(f'img.shape: {img.shape}')
         mask = Image.open(mask_path)
+        print(f'mask.shape: {mask.shape}')
 
         sample = {'image': np.array(img), 'label': np.array(mask)}
+
         if self.transform:
             sample = self.transform(sample)
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
