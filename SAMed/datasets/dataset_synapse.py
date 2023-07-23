@@ -21,15 +21,16 @@ class RandomGenerator(object):
         image, label = sample['image'], sample['label']
         x, y = image.shape[1], image.shape[2]
         image = zoom(image, (1, self.output_size[0] / x, self.output_size[1] / y), order=1)
-        label = zoom(label, (1, self.output_size[0] / x, self.output_size[1] / y), order=0)
+        label = zoom(label, (self.output_size[0] / x, self.output_size[1] / y), order=0)  # Remove the '1,'
 
         image = image.astype(np.float32)
 
         # Compute low_res_label
-        label_h, label_w = label.shape[1:]
-        low_res_label = zoom(label, (1, self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)
+        label_h, label_w = label.shape
+        low_res_label = zoom(label, (self.low_res[0] / label_h, self.low_res[1] / label_w), order=0)  # Remove the '1,'
 
         return {'image': image, 'label': label, 'low_res_label': low_res_label}
+
 
 class Synapse_dataset(Dataset):
     def __init__(self, base_dir, list_dir, split, transform=None):
