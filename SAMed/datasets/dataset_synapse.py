@@ -127,7 +127,7 @@ class Synapse_dataset(Dataset):
     #         sample = self.transform(sample)
     #     sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
     #     return sample
-    
+
     def __getitem__(self, idx):
         img_path = os.path.join(self.img_dir, self.imgs[idx])
         mask_path = os.path.join(self.ann_dir, self.masks[idx])
@@ -146,9 +146,11 @@ class Synapse_dataset(Dataset):
 
         if self.transform:
             # Modify the zoom factors to match the dimensions of the image and mask
-            zoom_factors = self.transform.zoom_factors
-            zoom_factors = zoom_factors + [1] * (img.ndim - len(zoom_factors))
-            self.transform.zoom_factors = zoom_factors
+            for t in self.transform.transforms:
+                if hasattr(t, 'zoom_factors'):
+                    zoom_factors = t.zoom_factors
+                    zoom_factors = zoom_factors + [1] * (img.ndim - len(zoom_factors))
+                    t.zoom_factors = zoom_factors
             sample = self.transform(sample)
         sample['case_name'] = self.imgs[idx].split('.')[0]  # remove the file extension
         return sample
