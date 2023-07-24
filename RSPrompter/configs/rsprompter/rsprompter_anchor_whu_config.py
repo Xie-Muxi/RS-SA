@@ -9,7 +9,8 @@ sub_model_optim = {
     'panoptic_head': {'lr_mult': 1},
 }
 
-max_epochs = 2000
+# max_epochs = 2000
+max_epochs = 100
 
 optimizer = dict(
     type='AdamW',
