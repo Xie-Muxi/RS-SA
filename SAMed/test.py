@@ -21,7 +21,8 @@ class_to_name = {1: 'spleen', 2: 'right kidney', 3: 'left kidney', 4: 'gallbladd
 
 
 def inference(args, multimask_output, db_config, model, test_save_path=None):
-    db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='test_vol')
+    # db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='test_vol')
+    db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='val')
     testloader = DataLoader(db_test, batch_size=1, shuffle=False, num_workers=1)
     logging.info(f'{len(testloader)} test iterations per epoch')
     model.eval()
@@ -61,20 +62,20 @@ def config_to_dict(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, default=None, help='The config file provided by the trained model')
-    parser.add_argument('--volume_path', type=str, default='testset/test_vol_h5/')
+    parser.add_argument('--volume_path', type=str, default='/nfs/home/3002_hehui/xmx/data/potsdam')
     parser.add_argument('--dataset', type=str, default='Synapse', help='Experiment name')
-    parser.add_argument('--num_classes', type=int, default=8)
+    parser.add_argument('--num_classes', type=int, default=6)
     parser.add_argument('--list_dir', type=str, default='./lists/lists_Synapse/', help='list_dir')
-    parser.add_argument('--output_dir', type=str, default='/output')
+    parser.add_argument('--output_dir', type=str, default='/nfs/home/3002_hehui/xmx/output/test')
     parser.add_argument('--img_size', type=int, default=512, help='Input image size of the network')
     parser.add_argument('--input_size', type=int, default=224, help='The input size for training SAM model')
     parser.add_argument('--seed', type=int,
                         default=1234, help='random seed')
     parser.add_argument('--is_savenii', action='store_true', help='Whether to save results during inference')
     parser.add_argument('--deterministic', type=int, default=1, help='whether use deterministic training')
-    parser.add_argument('--ckpt', type=str, default='checkpoints/sam_vit_b_01ec64.pth',
+    parser.add_argument('--ckpt', type=str, default='/nfs/home/3002_hehui/xmx/segment-anything/segment_anything/ckpt/sam_vit_b_01ec64.pth',
                         help='Pretrained checkpoint')
-    parser.add_argument('--lora_ckpt', type=str, default='checkpoints/epoch_159.pth', help='The checkpoint from LoRA')
+    parser.add_argument('--lora_ckpt', type=str, default='/nfs/home/3002_hehui/xmx/out_tem/Synapse_512_pretrain_vit_b_epo200_bs12_lr0.005/epoch_159.pth', help='The checkpoint from LoRA')
     parser.add_argument('--vit_name', type=str, default='vit_b', help='Select one vit model')
     parser.add_argument('--rank', type=int, default=4, help='Rank for LoRA adaptation')
     parser.add_argument('--module', type=str, default='sam_lora_image_encoder')
