@@ -17,8 +17,8 @@ from datasets.dataset_synapse import Synapse_dataset
 # from icecream import ic
 
 
-class_to_name = {1: 'spleen', 2: 'right kidney', 3: 'left kidney', 4: 'gallbladder', 5: 'liver', 6: 'stomach', 7: 'aorta', 8: 'pancreas'}
-
+# class_to_name = {1: 'Building', 2: 'Clutter', 3: 'Impervious', 4: 'Tree', 5: 'Low Vegetation', 6: 'Car'}
+class_to_name = {1: 'ImSurf', 2: 'Building', 3: 'LowVeg', 4: 'Tree', 5: 'Car', 6: 'Clutter'}
 
 def inference(args, multimask_output, db_config, model, test_save_path=None):
     # db_test = db_config['Dataset'](base_dir=args.volume_path, list_dir=args.list_dir, split='test_vol')
